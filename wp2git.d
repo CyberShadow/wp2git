@@ -26,11 +26,11 @@ int main(string[] args)
 	foreach (child; xml[0]["page"])
 		if (child.tag=="revision")
 		{
-			string summary = child["comment"].toString;
-			string text = child["text"].toString;
+			string summary = child["comment"] ? child["comment"].text : null;
+			string text = child["text"].text;
 			data ~= 
 				"commit master\n" ~ 
-				"committer <" ~ (child["contributor"]["username"] ? child["contributor"]["username"].toString : child["contributor"]["ip"].toString) ~ "> now\n" ~ 
+				"committer <" ~ (child["contributor"]["username"] ? child["contributor"]["username"].text : child["contributor"]["ip"].text) ~ "> now\n" ~ 
 				"data " ~ .toString(summary.length) ~ "\n" ~ 
 				summary ~ "\n" ~ 
 				"M 644 inline " ~ name ~ ".txt\n" ~ 
@@ -38,6 +38,6 @@ int main(string[] args)
 				text ~ "\n" ~ 
 				"\n";
 		}
-	
 	write("fast-import-data", data);
+	return 0;
 }
