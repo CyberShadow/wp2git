@@ -23,6 +23,7 @@ int main(string[] args)
 
 	fwritefln(stderr, "Loading history...");
 	string xmldata = cast(string) read("history.xml");
+	std.file.remove("history.xml");
 	auto xml = new XmlDocument(new MemoryStream(xmldata));
 
 	string data = "reset refs/heads/master\n";
@@ -50,6 +51,7 @@ int main(string[] args)
 	
 	system("git init");
 	system("git fast-import --date-format=rfc2822 < fast-import-data");
+	std.file.remove("fast-import-data");
 	system("git reset --hard");
 
 	return 0;
