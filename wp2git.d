@@ -43,5 +43,10 @@ int main(string[] args)
 				"\n";
 		}
 	write("fast-import-data", data);
+
+	if (!exists(".git"))
+		system("git init");
+	system("git fast-import < fast-import-data");
+
 	return 0;
 }
