@@ -28,12 +28,13 @@ int main(string[] args)
 	foreach (child; xml[0]["page"])
 		if (child.tag=="revision")
 		{
-			fwritefln(stderr, "Revision %s", child["id"].text);
 			string summary = child["comment"] ? child["comment"].text : null;
+			string committer = child["contributor"]["username"] ? child["contributor"]["username"].text : child["contributor"]["ip"].text;
+			fwritefln(stderr, "Revision %s by %s: %s", child["id"].text, committer, summary);
 			string text = child["text"].text;
 			data ~= 
 				"commit master\n" ~ 
-				"committer <" ~ (child["contributor"]["username"] ? child["contributor"]["username"].text : child["contributor"]["ip"].text) ~ "> now\n" ~ 
+				"committer <" ~ committer ~ "> now\n" ~ 
 				"data " ~ .toString(summary.length) ~ "\n" ~ 
 				summary ~ "\n" ~ 
 				"M 644 inline " ~ name ~ ".txt\n" ~ 
