@@ -3,6 +3,7 @@ import std.process;
 import std.stream;
 import std.string;
 import std.file;
+import std.conv;
 import litexml;
 
 int main(string[] args)
@@ -34,7 +35,7 @@ int main(string[] args)
 			string text = child["text"].text;
 			data ~= 
 				"commit refs/heads/master\n" ~ 
-				"committer " ~ committer ~ " <" ~ committer ~ "@en.wikipedia.org> now\n" ~ 
+				"committer " ~ committer ~ " <" ~ committer ~ "@en.wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~ 
 				"data " ~ .toString(summary.length) ~ "\n" ~ 
 				summary ~ "\n" ~ 
 				"M 644 inline " ~ name ~ ".txt\n" ~ 
@@ -46,7 +47,16 @@ int main(string[] args)
 
 	if (!exists(".git"))
 		system("git init");
-	system("git fast-import < fast-import-data");
+	system("git fast-import --date-format=rfc2822 < fast-import-data");
 
 	return 0;
+}
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+// 2010-06-15T19:28:44Z
+// Feb 6 11:22:18 2007 -0500
+string ISO8601toRFC2822(string s)
+{
+	return monthNames[.toInt(s[5..7])-1] ~ " " ~ s[8..10] ~ " " ~ s[11..13] ~ ":" ~ s[14..16] ~ ":" ~ s[17..19] ~ " " ~ s[0..4] ~ " +0000";
 }
