@@ -33,8 +33,8 @@ int main(string[] args)
 			fwritefln(stderr, "Revision %s by %s: %s", child["id"].text, committer, summary);
 			string text = child["text"].text;
 			data ~= 
-				"commit master\n" ~ 
-				"committer <" ~ committer ~ "> now\n" ~ 
+				"commit refs/heads/master\n" ~ 
+				"committer " ~ committer ~ " <" ~ committer ~ "@en.wikipedia.org> now\n" ~ 
 				"data " ~ .toString(summary.length) ~ "\n" ~ 
 				summary ~ "\n" ~ 
 				"M 644 inline " ~ name ~ ".txt\n" ~ 
