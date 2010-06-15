@@ -45,9 +45,12 @@ int main(string[] args)
 		}
 	write("fast-import-data", data);
 
-	if (!exists(".git"))
-		system("git init");
+	if (exists(".git"))
+		throw new Exception("A git repository already exists here!");
+	
+	system("git init");
 	system("git fast-import --date-format=rfc2822 < fast-import-data");
+	system("git reset --hard");
 
 	return 0;
 }
