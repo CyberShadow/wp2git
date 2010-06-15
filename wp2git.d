@@ -30,10 +30,13 @@ int main(string[] args)
 	foreach (child; xml[0]["page"])
 		if (child.tag=="revision")
 		{
+			string id = child["id"].text;
 			string summary = child["comment"] ? child["comment"].text : null;
 			string committer = child["contributor"]["username"] ? child["contributor"]["username"].text : child["contributor"]["ip"].text;
-			fwritefln(stderr, "Revision %s by %s: %s", child["id"].text, committer, summary);
 			string text = child["text"].text;
+			fwritefln(stderr, "Revision %s by %s: %s", id, committer, summary);
+			
+			summary ~= "\n\nhttp://en.wikipedia.org/w/index.php?oldid=" ~ id;
 			data ~= 
 				"commit refs/heads/master\n" ~ 
 				"committer " ~ committer ~ " <" ~ committer ~ "@en.wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~ 
