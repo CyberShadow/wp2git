@@ -21,7 +21,8 @@ int main(string[] args)
 		throw new Exception("curl error");
 
 	fwritefln(stderr, "Loading history...");
-	auto xml = new XmlDocument(new File("history.xml"));
+	string xmldata = cast(string) read("history.xml");
+	auto xml = new XmlDocument(new MemoryStream(xmldata));
 
 	string data;
 	foreach (child; xml[0]["page"])
