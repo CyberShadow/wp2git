@@ -24,7 +24,7 @@ int main(string[] args)
 	string xmldata = cast(string) read("history.xml");
 	auto xml = new XmlDocument(new MemoryStream(xmldata));
 
-	string data;
+	string data = "reset refs/heads/master\n";
 	foreach (child; xml[0]["page"])
 		if (child.tag=="revision")
 		{
