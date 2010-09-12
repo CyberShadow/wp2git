@@ -55,7 +55,7 @@ int main(string[] args)
 	
 	system("git init");
 	system("git fast-import --date-format=rfc2822 < fast-import-data");
-	std.file.remove("fast-import-data");
+//	std.file.remove("fast-import-data");
 	system("git reset --hard");
 
 	return 0;
