@@ -1,9 +1,6 @@
-/**
- * Light read-only XML library
- *
- * Copyright 2008, 2009  Vladimir Panteleev <thecybershadow@gmail.com>
- */
+// Written in the D Programming Language, version 1
 
+/// Light read-only XML library
 module litexml;
 
 import std.stream;
