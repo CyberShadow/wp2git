@@ -1,3 +1,5 @@
+// Written in the D Programming Language, version 1
+
 import std.stdio;
 import std.process;
 import std.stream;
