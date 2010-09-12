@@ -12,13 +12,16 @@ import litexml;
 int main(string[] args)
 {
 	string name;
-	bool usage;
+	bool usage, noImport;
 	foreach (arg; args[1..$])
 		switch (arg)
 		{
 			case "-h":
 			case "--help":
 				usage = true;
+				break;
+			case "--no-import":
+				noImport = true;
 				break;
 			default:
 				if (name)
@@ -33,6 +36,7 @@ int main(string[] args)
 		fwritefln(stderr, "Create a git repository with the history of the specified Wikipedia article.");
 		fwritefln(stderr, "Supported options:");
 		fwritefln(stderr, " -h  --help		Display this help");
+		fwritefln(stderr, "     --no-import	Don't invoke ``git fast-import'' and only generate the fast-import data");
 		return 2;
 	}
 
@@ -76,12 +80,15 @@ int main(string[] args)
 		}
 	write("fast-import-data", data);
 
+	if (noImport)
+		return 0;
+
 	if (exists(".git"))
 		throw new Exception("A git repository already exists here!");
 	
 	system("git init");
 	system("git fast-import --date-format=rfc2822 < fast-import-data");
-//	std.file.remove("fast-import-data");
+	std.file.remove("fast-import-data");
 	system("git reset --hard");
 
 	return 0;
