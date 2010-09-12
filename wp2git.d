@@ -100,11 +100,11 @@ int main(string[] args)
 	return 0;
 }
 
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-// 2010-06-15T19:28:44Z
-// Feb 6 11:22:18 2007 -0500
 string ISO8601toRFC2822(string s)
 {
+	const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	
+	// 2010-06-15T19:28:44Z
+	// Feb 6 11:22:18 2007 -0500
 	return monthNames[.toInt(s[5..7])-1] ~ " " ~ s[8..10] ~ " " ~ s[11..13] ~ ":" ~ s[14..16] ~ ":" ~ s[17..19] ~ " " ~ s[0..4] ~ " +0000";
 }
