@@ -11,13 +11,34 @@ import litexml;
 
 int main(string[] args)
 {
-	if (args.length != 2)
+	string name;
+	bool usage;
+	foreach (arg; args[1..$])
+		switch (arg)
+		{
+			case "-h":
+			case "--help":
+				usage = true;
+				break;
+			default:
+				if (name)
+					throw new Exception("Multiple article name arguments");
+				name = arg;
+				break;
+		}
+	 
+	if (args.length == 1 || usage)
 	{
-		fwritefln(stderr, "Usage: %s Article_name", args[0]);
-		return 1;
+		fwritefln(stderr, "Usage: %s Article_name [OPTION]...", args[0]);
+		fwritefln(stderr, "Create a git repository with the history of the specified Wikipedia article.");
+		fwritefln(stderr, "Supported options:");
+		fwritefln(stderr, " -h  --help		Display this help");
+		return 2;
 	}
 
-	string name = args[1];
+	if (!name)
+		throw new Exception("No article specified");
+
 	if (name.length>=2 && name[0]=='"' && name[$-1]=='"')
 		name = name[1..$-1]; // strip quotes
 
