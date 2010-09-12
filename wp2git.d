@@ -51,7 +51,10 @@ int main(string[] args)
 	auto xml = new XmlDocument(new MemoryStream(xmldata));
 
 	string data = "reset refs/heads/master\n";
-	foreach (child; xml[0]["page"])
+	auto page = xml[0]["page"];
+	if (!page)
+		throw new Exception("No such page");
+	foreach (child; page)
 		if (child.tag=="revision")
 		{
 			string id = child["id"].text;
