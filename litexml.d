@@ -305,16 +305,16 @@ static this()
 		"mdash" : \&mdash; ,
 		"lsquo" : \&lsquo; ,
 		"rsquo" : \&rsquo; ,
-		"sbquo" : \&sbquo; ,
+//		"sbquo" : \&sbquo; ,
 		"ldquo" : \&ldquo; ,
 		"rdquo" : \&rdquo; ,
-		"bdquo" : \&bdquo; ,
+//		"bdquo" : \&bdquo; ,
 		"dagger": \&dagger;,
 		"Dagger": \&Dagger;,
-		"permil": \&permil;,
-		"lsaquo": \&lsaquo;,
-		"rsaquo": \&rsaquo;,
-		"euro"  : \&euro;
+		"permil": \&permil;
+//		"lsaquo": \&lsaquo;,
+//		"rsaquo": \&rsaquo;,
+//		"euro"  : \&euro;
 	];
 }
 
