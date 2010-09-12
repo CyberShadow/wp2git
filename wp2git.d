@@ -11,10 +11,10 @@ import litexml;
 
 int main(string[] args)
 {
-	string name;
+	string name, language="en";
 	bool usage, noImport;
-	foreach (arg; args[1..$])
-		switch (arg)
+	for (int i=1; i<args.length; i++)
+		switch (args[i])
 		{
 			case "-h":
 			case "--help":
@@ -23,10 +23,15 @@ int main(string[] args)
 			case "--no-import":
 				noImport = true;
 				break;
+			case "--language":
+				if (++i==args.length)
+					throw new Exception("Language expected");
+				language = args[i];
+				break;
 			default:
 				if (name)
 					throw new Exception("Multiple article name arguments");
-				name = arg;
+				name = args[i];
 				break;
 		}
 	 
@@ -37,6 +42,7 @@ int main(string[] args)
 		fwritefln(stderr, "Supported options:");
 		fwritefln(stderr, " -h  --help		Display this help");
 		fwritefln(stderr, "     --no-import	Don't invoke ``git fast-import'' and only generate the fast-import data");
+		fwritefln(stderr, "     --language LANG	Specify the Wikipedia language subdomain (default: en)");
 		return 2;
 	}
 
@@ -46,7 +52,7 @@ int main(string[] args)
 	if (name.length>=2 && name[0]=='"' && name[$-1]=='"')
 		name = name[1..$-1]; // strip quotes
 
-	if (spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://en.wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"]))
+	if (spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"]))
 		throw new Exception("curl error");
 
 	fwritefln(stderr, "Loading history...");
@@ -67,10 +73,10 @@ int main(string[] args)
 			string text = child["text"].text;
 			fwritefln(stderr, "Revision %s by %s: %s", id, committer, summary);
 			
-			summary ~= "\n\nhttp://en.wikipedia.org/w/index.php?oldid=" ~ id;
+			summary ~= "\n\nhttp://" ~ language ~ ".wikipedia.org/w/index.php?oldid=" ~ id;
 			data ~= 
 				"commit refs/heads/master\n" ~ 
-				"committer " ~ committer ~ " <" ~ committer ~ "@en.wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~ 
+				"committer " ~ committer ~ " <" ~ committer ~ "@" ~ language ~ ".wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~ 
 				"data " ~ .toString(summary.length) ~ "\n" ~ 
 				summary ~ "\n" ~ 
 				"M 644 inline " ~ name ~ ".txt\n" ~ 
