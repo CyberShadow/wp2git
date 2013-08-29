@@ -14,7 +14,7 @@ import ae.utils.xmllite;
 
 int main(string[] args)
 {
-	string name, language="en";
+	string language="en";
 	bool usage, noImport;
 	getopt(args,
 		"h|help", &usage,
@@ -34,14 +34,13 @@ int main(string[] args)
 		return 2;
 	}
 
-	if (!name)
-		throw new Exception("No article specified");
+	enforce(args.length==2, "No article specified");
+	auto name = args[1];
 
 	if (name.length>=2 && name[0]=='"' && name[$-1]=='"')
 		name = name[1..$-1]; // strip quotes
 
-	if (spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"]))
-		throw new Exception("curl error");
+	enforce(spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"])==0, "curl error");
 
 	stderr.writefln("Loading history...");
 	string xmldata = cast(string) read("history.xml");
@@ -50,8 +49,7 @@ int main(string[] args)
 
 	string data = "reset refs/heads/master\n";
 	auto page = xml[0]["page"];
-	if (!page)
-		throw new Exception("No such page");
+	enforce(page, "No such page");
 	foreach (child; page)
 		if (child.tag=="revision")
 		{
@@ -77,9 +75,8 @@ int main(string[] args)
 	if (noImport)
 		return 0;
 
-	if (exists(".git"))
-		throw new Exception("A git repository already exists here!");
-	
+	enforce(!exists(".git"), "A git repository already exists here!");
+
 	system("git init");
 	system("git fast-import --date-format=rfc2822 < fast-import-data");
 	std.file.remove("fast-import-data");
