@@ -55,16 +55,16 @@ int main(string[] args)
 			string committer = child["contributor"].findChild("username") ? child["contributor"]["username"].text : child["contributor"]["ip"].text;
 			string text = child["text"].text;
 			stderr.writefln("Revision %s by %s: %s", id, committer, summary);
-			
+
 			summary ~= "\n\nhttp://" ~ language ~ ".wikipedia.org/w/index.php?oldid=" ~ id;
-			data ~= 
-				"commit refs/heads/master\n" ~ 
-				"committer " ~ committer ~ " <" ~ committer ~ "@" ~ language ~ ".wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~ 
-				"data " ~ to!string(summary.length) ~ "\n" ~ 
-				summary ~ "\n" ~ 
-				"M 644 inline " ~ name ~ ".txt\n" ~ 
-				"data " ~ to!string(text.length) ~ "\n" ~ 
-				text ~ "\n" ~ 
+			data ~=
+				"commit refs/heads/master\n" ~
+				"committer " ~ committer ~ " <" ~ committer ~ "@" ~ language ~ ".wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~
+				"data " ~ to!string(summary.length) ~ "\n" ~
+				summary ~ "\n" ~
+				"M 644 inline " ~ name ~ ".txt\n" ~
+				"data " ~ to!string(text.length) ~ "\n" ~
+				text ~ "\n" ~
 				"\n";
 		}
 	std.file.write("fast-import-data", data);
@@ -85,7 +85,7 @@ int main(string[] args)
 string ISO8601toRFC2822(string s)
 {
 	const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	
+
 	// 2010-06-15T19:28:44Z
 	// Feb 6 11:22:18 2007 -0500
 	return monthNames[.to!int(s[5..7])-1] ~ " " ~ s[8..10] ~ " " ~ s[11..13] ~ ":" ~ s[14..16] ~ ":" ~ s[17..19] ~ " " ~ s[0..4] ~ " +0000";
