@@ -37,9 +37,6 @@ int main(string[] args)
 	enforce(args.length==2, "No article specified");
 	auto name = args[1];
 
-	if (name.length>=2 && name[0]=='"' && name[$-1]=='"')
-		name = name[1..$-1]; // strip quotes
-
 	enforce(spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"])==0, "curl error");
 
 	stderr.writefln("Loading history...");
