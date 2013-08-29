@@ -39,6 +39,11 @@ int main(string[] args)
 
 	enforce(args.length==2, "No article specified");
 	auto name = args[1];
+	auto fn = sanitizeFn(name);
+
+	if (!exists(fn))
+		mkdir(fn);
+	chdir(fn);
 
 	if (!exists("history.xml"))
 		enforce(spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"])==0, "curl error");
@@ -66,7 +71,7 @@ int main(string[] args)
 				"committer " ~ committer ~ " <" ~ committer ~ "@" ~ language ~ ".wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~
 				"data " ~ to!string(summary.length) ~ "\n" ~
 				summary ~ "\n" ~
-				"M 644 inline " ~ sanitizeFn(name) ~ ".txt\n" ~
+				"M 644 inline " ~ fn ~ ".txt\n" ~
 				"data " ~ to!string(text.length) ~ "\n" ~
 				text ~ "\n" ~
 				"\n";
