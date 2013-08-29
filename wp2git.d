@@ -15,9 +15,10 @@ import ae.utils.xmllite;
 int main(string[] args)
 {
 	string language="en";
-	bool usage, noImport;
+	bool usage, noImport, keepHistory;
 	getopt(args,
 		"h|help", &usage,
+		"keep-history", &keepHistory,
 		"no-import", &noImport,
 		"language", &language,
 	);
@@ -28,20 +29,23 @@ int main(string[] args)
 		stderr.writefln("Usage: %s Article_name [OPTION]...", args[0]);
 		stderr.writefln("Create a git repository with the history of the specified Wikipedia article.");
 		stderr.writefln("Supported options:");
-		stderr.writefln(" -h  --help		Display this help");
-		stderr.writefln("     --no-import	Don't invoke ``git fast-import'' and only generate the fast-import data");
-		stderr.writefln("     --language LANG	Specify the Wikipedia language subdomain (default: en)");
+		stderr.writefln(" -h  --help            Display this help");
+		stderr.writefln("     --keep-history    Don't delete history.xml");
+		stderr.writefln("     --no-import       Don't invoke ``git fast-import'' and only");
+		stderr.writefln("                         generate the fast-import data");
+		stderr.writefln("     --language LANG   Specify the Wikipedia language subdomain (default: en)");
 		return 2;
 	}
 
 	enforce(args.length==2, "No article specified");
 	auto name = args[1];
 
-	enforce(spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"])==0, "curl error");
+	if (!exists("history.xml"))
+		enforce(spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"])==0, "curl error");
 
 	stderr.writefln("Loading history...");
 	string xmldata = cast(string) read("history.xml");
-	std.file.remove("history.xml");
+	if (!keepHistory) std.file.remove("history.xml");
 	auto xml = new XmlDocument(xmldata);
 
 	string data = "reset refs/heads/master\n";
