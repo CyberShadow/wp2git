@@ -15,6 +15,10 @@ Run `wp2git --help` for more options.
 
 The commands `git` and `curl` should be accessible from `PATH`.
 
+### Download
+
+You can find compiled Windows binaries on [files.thecybershadow.net](http://files.thecybershadow.net/wp2git/).
+
 ### Building
 
 You will need a [D compiler](http://dlang.org/download.html) to build `wp2git`.
