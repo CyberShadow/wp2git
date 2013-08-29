@@ -7,6 +7,8 @@ import std.string;
 import std.file;
 import std.conv;
 import std.uri;
+import std.getopt;
+import std.exception;
 
 import ae.utils.xmllite;
 
@@ -14,28 +16,13 @@ int main(string[] args)
 {
 	string name, language="en";
 	bool usage, noImport;
-	for (int i=1; i<args.length; i++)
-		switch (args[i])
-		{
-			case "-h":
-			case "--help":
-				usage = true;
-				break;
-			case "--no-import":
-				noImport = true;
-				break;
-			case "--language":
-				if (++i==args.length)
-					throw new Exception("Language expected");
-				language = args[i];
-				break;
-			default:
-				if (name)
-					throw new Exception("Multiple article name arguments");
-				name = args[i];
-				break;
-		}
-	 
+	getopt(args,
+		"h|help", &usage,
+		"no-import", &noImport,
+		"language", &language,
+	);
+
+	enforce(args.length<=2, "Multiple article name arguments");
 	if (args.length == 1 || usage)
 	{
 		stderr.writefln("Usage: %s Article_name [OPTION]...", args[0]);
