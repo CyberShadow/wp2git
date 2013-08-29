@@ -54,7 +54,7 @@ int main(string[] args)
 			string summary = child.findChild("comment") ? child["comment"].text : null;
 			string committer = child["contributor"].findChild("username") ? child["contributor"]["username"].text : child["contributor"]["ip"].text;
 			string text = child["text"].text;
-			stderr.writefln("Revision %s by %s: %s", id, committer, summary);
+			stderr.writefln(" >> Revision %s by %s: %s", id, committer, summary);
 
 			summary ~= "\n\nhttp://" ~ language ~ ".wikipedia.org/w/index.php?oldid=" ~ id;
 			data ~=
