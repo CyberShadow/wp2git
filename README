@@ -1,9 +1,0 @@
-This project is written to use the Phobos standard library for D,
-so it must be compiled with a compiler which supports Phobos, such
-as GDC.
-
-To compile it using GDC:
-
-gdc *.d -o wp2git
-
-which generates an executable called wp2git.
