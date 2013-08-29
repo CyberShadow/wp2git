@@ -71,7 +71,7 @@ int main(string[] args)
 				"committer " ~ committer ~ " <" ~ committer ~ "@" ~ language ~ ".wikipedia.org> " ~ ISO8601toRFC2822(child["timestamp"].text) ~ "\n" ~
 				"data " ~ to!string(summary.length) ~ "\n" ~
 				summary ~ "\n" ~
-				"M 644 inline " ~ fn ~ ".txt\n" ~
+				"M 644 inline " ~ fn ~ ".mw\n" ~
 				"data " ~ to!string(text.length) ~ "\n" ~
 				text ~ "\n" ~
 				"\n";
