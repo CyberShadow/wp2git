@@ -2,7 +2,6 @@
 
 import std.stdio;
 import std.process;
-import std.stream;
 import std.string;
 import std.file;
 import std.conv;
@@ -46,7 +45,7 @@ int main(string[] args)
 	chdir(fn);
 
 	if (!exists("history.xml"))
-		enforce(spawnvp(P_WAIT, "curl", ["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"])==0, "curl error");
+		enforce(spawnProcess(["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"]).wait()==0, "curl error");
 
 	stderr.writefln("Loading history...");
 	string xmldata = cast(string) read("history.xml");
@@ -83,10 +82,10 @@ int main(string[] args)
 
 	enforce(!exists(".git"), "A git repository already exists here!");
 
-	system("git init");
-	system("git fast-import --date-format=rfc2822 < fast-import-data");
+	enforce(spawnProcess(["git", "init"]).wait() == 0, "git init failed");
+	enforce(spawnProcess(["git", "fast-import", "--date-format=rfc2822"], File("fast-import-data")).wait() == 0, "git fast-import failed");
 	std.file.remove("fast-import-data");
-	system("git reset --hard");
+	enforce(spawnProcess(["git", "reset", "--hard"]).wait() == 0, "git reset failed");
 
 	return 0;
 }
