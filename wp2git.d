@@ -45,7 +45,7 @@ int main(string[] args)
 	chdir(fn);
 
 	if (!exists("history.xml"))
-		enforce(spawnProcess(["curl", "-d", "\"\"", "http://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"]).wait()==0, "curl error");
+		enforce(spawnProcess(["curl", "-d", "\"\"", "https://" ~ language ~ ".wikipedia.org/w/index.php?title=Special:Export&pages=" ~ encodeComponent(name), "-o", "history.xml"]).wait()==0, "curl error");
 
 	stderr.writefln("Loading history...");
 	string xmldata = cast(string) read("history.xml");
